@@ -1,0 +1,4 @@
+-D__AVR_ATmega324PA__
+-DF_CPU 16000000L
+-I./lib
+-I/Applications/Arduino.app/Contents/Java/hardware/tools/avr/avr/include
