@@ -54,7 +54,7 @@ Since I have to drive 8 RGB LEDs (24 independent channels) in software PWM opera
 
 Since PWM has to be fast, we have to keep our timer's ISR small.
 
-I decided to use all the pins from 3 ports because it's easy to change them all at the same time. That's why, every time I would need to change the color of the LEDs, I would pre-calculate a render buffer with `B[i]`, the state of the each of the 3 ports at the time `i`. We can make `i` go from `0` to `15` and then loop around.
+I decided to use all the pins from 3 ports because it's easy to change them all at the same time. That's why, every time I would need to change the color of the LEDs, I would pre-calculate a render buffer with `B[i]`, the state of the each of the 3 ports at the time `i`. We can make `i` sweep from `0` to `15` and then loop around as the timer ticks.
 
 For example, let's say I want to keep one of the LEDs at 25% brightness. I would first figure out what's the corresponding port and bit for the LED, then mark it as `1` in `B[0]`, `B[1]`, `B[2]`, `B[3]` and as `0` in `B[4- 15]`. This way, as the timer sweeps the render buffer, the LED will be lit 4 times out of 16.
 
