@@ -6,7 +6,7 @@
 
 How it looks:
 
-![Demo](./poi.gif)
+![Demo](./docs/img/poi.gif)
 
 ## About this project
 
