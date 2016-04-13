@@ -6,7 +6,7 @@
 
 How it looks:
 
-![Demo](https://raw.github.com/dapetcu21/pmpoi/readme/poi.gif)
+![Demo](https://raw.github.com/dapetcu21/pmpoi/master/poi.gif)
 
 ## About this project
 
