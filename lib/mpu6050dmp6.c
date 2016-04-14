@@ -31,6 +31,7 @@ Please refer to LICENSE file for licensing information.
 #define MPU6050_DMP_UPDATES_SIZE 47
 
 volatile uint8_t mpu6050_mpuInterrupt = 0;
+volatile uint8_t mpu6050_mpuInterruptEnabled = 0;
 uint8_t *dmpPacketBuffer;
 uint16_t mpu6050_fifoCount = 0;
 uint8_t mpu6050_mpuIntStatus = 0;
@@ -473,13 +474,6 @@ uint8_t mpu6050_getQuaternionWait(double *qw, double *qx, double *qy, double *qz
 	}
 
 	return 0;
-}
-
-/*
- * on interrupt set data availabe
- */
-ISR (INT0_vect) {
-	mpu6050_mpuInterrupt = 1;
 }
 
 #endif

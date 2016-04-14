@@ -25,6 +25,15 @@ void buttonOnPress(uint8_t button) {
 }
 
 void buttonOnRelease(uint8_t button) {
+  switch (button) {
+    #if MPU6050_GETATTITUDE == 2
+    case BUTTON_GYRO_INT:
+      if (mpu6050_mpuInterruptEnabled) {
+        mpu6050_mpuInterrupt = 1;
+      }
+      break;
+    #endif
+  }
 }
 
 void setup() {
