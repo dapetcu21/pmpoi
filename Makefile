@@ -4,7 +4,7 @@ MAX_SIZE = 28672 # 32k - 4k bootloader
 CFLAGS = -Wall -Os -mmcu=atmega324pa -DF_CPU=$(F_CPU) -I./lib --std=c99
 LDFLAGS = -lm
 
-OBJFILES = src/main.o src/pwm.o lib/mpu6050.o lib/mpu6050dmp6.o lib/i2cmaster.o
+OBJFILES = src/main.o src/pwm.o src/button.o src/time.o lib/mpu6050.o lib/mpu6050dmp6.o lib/i2cmaster.o
 
 all: build
 

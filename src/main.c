@@ -3,13 +3,39 @@
 #include <util/delay.h>
 #include <mpu6050.h>
 #include <i2cmaster.h>
+
 #include "pwm.h"
+#include "button.h"
+#include "time.h"
 
-int main() {
-  // double ax, ay, az, gxd, gyd, gzd;
+volatile uint8_t off;
 
+void buttonOnPress(uint8_t button) {
+  switch (button) {
+    case BUTTON_LEFT:
+      off = (off - 1) & 3;
+      break;
+    case BUTTON_RIGHT:
+      off = (off + 1) & 3;
+      break;
+    case BUTTON_A:
+      off = 0;
+      break;
+  }
+}
+
+void buttonOnRelease(uint8_t button) {
+}
+
+void setup() {
   // Enable interrupts
   sei();
+
+  // Init button interrupts
+  buttonInit();
+
+  // Init time counter
+  timeInit();
 
   // Init gyro
   i2c_init();
@@ -19,7 +45,12 @@ int main() {
   // Init PWM
   pwmInit();
   pwmEnable();
+}
 
+int main() {
+  setup();
+
+  // double ax, ay, az, gxd, gyd, gzd;
   // while (1) {
   //   mpu6050_getConvData(&ax, &ay, &az, &gxd, &gyd, &gzd);
   //   pwmRenderColor(ax * 100.0 + 100.0, ay * 100.0 + 100.0, az * 100.0 + 100.0);
@@ -36,11 +67,8 @@ int main() {
     0x00, 0xf0, 0x0f, // 2 instances of blue
   };
 
-  uint8_t off = 0;
   while (1) {
     pwmRenderHalfBytes(colors + off * 3);
-    off = (off + 1) & 3;
-    _delay_ms(100);
   }
 
   return 0;
