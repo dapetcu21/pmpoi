@@ -54,7 +54,7 @@
 <layer number="96" name="Values" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="97" name="Info" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="98" name="Guide" color="6" fill="1" visible="yes" active="yes"/>
-<layer number="99" name="SpiceOrder" color="5" fill="1" visible="yes" active="yes"/>
+<layer number="99" name="SpiceOrder" color="5" fill="1" visible="no" active="yes"/>
 </layers>
 <schematic xreflabel="%F%N/%S.%C%R" xrefpart="/%S.%C%R">
 <libraries>
@@ -1340,6 +1340,7 @@ W = angled&lt;p&gt;
 <part name="R26" library="eagle-ltspice" deviceset="R" device="0207/10" value="470"/>
 <part name="S3" library="switch-omron" deviceset="40-XX" device=""/>
 <part name="R27" library="eagle-ltspice" deviceset="R" device="0207/10" value="470"/>
+<part name="R28" library="eagle-ltspice" deviceset="R" device="0207/10"/>
 </parts>
 <sheets>
 <sheet>
@@ -1351,33 +1352,28 @@ W = angled&lt;p&gt;
 <instance part="IC3" gate="G$1" x="50.8" y="10.16"/>
 <instance part="LED1" gate="G$1" x="116.84" y="106.68" smashed="yes" rot="R270">
 <attribute name="NAME" x="117.094" y="99.06" size="1.778" layer="95" rot="R270"/>
-<attribute name="VALUE" x="114.935" y="99.06" size="1.778" layer="96" rot="R270"/>
 </instance>
 <instance part="LED2" gate="G$1" x="121.92" y="91.44" smashed="yes" rot="R270">
 <attribute name="NAME" x="122.174" y="83.82" size="1.778" layer="95" rot="R270"/>
-<attribute name="VALUE" x="120.015" y="83.82" size="1.778" layer="96" rot="R270"/>
 </instance>
 <instance part="LED3" gate="G$1" x="116.84" y="76.2" smashed="yes" rot="R270">
 <attribute name="NAME" x="117.094" y="68.58" size="1.778" layer="95" rot="R270"/>
-<attribute name="VALUE" x="114.935" y="68.58" size="1.778" layer="96" rot="R270"/>
 </instance>
 <instance part="LED4" gate="G$1" x="121.92" y="60.96" smashed="yes" rot="R270">
 <attribute name="NAME" x="122.174" y="53.34" size="1.778" layer="95" rot="R270"/>
-<attribute name="VALUE" x="120.015" y="53.34" size="1.778" layer="96" rot="R270"/>
 </instance>
 <instance part="LED5" gate="G$1" x="116.84" y="45.72" smashed="yes" rot="R270">
 <attribute name="NAME" x="117.094" y="38.1" size="1.778" layer="95" rot="R270"/>
-<attribute name="VALUE" x="114.935" y="38.1" size="1.778" layer="96" rot="R270"/>
 </instance>
 <instance part="LED6" gate="G$1" x="121.92" y="30.48" smashed="yes" rot="R270">
 <attribute name="NAME" x="122.174" y="22.86" size="1.778" layer="95" rot="R270"/>
-<attribute name="VALUE" x="120.015" y="22.86" size="1.778" layer="96" rot="R270"/>
 </instance>
 <instance part="LED7" gate="G$1" x="116.84" y="15.24" smashed="yes" rot="R270">
 <attribute name="NAME" x="117.094" y="7.62" size="1.778" layer="95" rot="R270"/>
-<attribute name="VALUE" x="114.935" y="7.62" size="1.778" layer="96" rot="R270"/>
 </instance>
-<instance part="LED8" gate="G$1" x="121.92" y="0" rot="R270"/>
+<instance part="LED8" gate="G$1" x="121.92" y="0" smashed="yes" rot="R270">
+<attribute name="NAME" x="122.174" y="-7.62" size="1.778" layer="95" rot="R270"/>
+</instance>
 <instance part="R1" gate="G$1" x="101.6" y="111.76" smashed="yes">
 <attribute name="NAME" x="97.79" y="113.2586" size="1.778" layer="95"/>
 <attribute name="VALUE" x="105.41" y="113.538" size="1.778" layer="96"/>
@@ -1495,6 +1491,7 @@ W = angled&lt;p&gt;
 <attribute name="NAME" x="183.9214" y="39.37" size="1.778" layer="95" rot="R90"/>
 <attribute name="VALUE" x="183.642" y="46.99" size="1.778" layer="96" rot="R90"/>
 </instance>
+<instance part="R28" gate="G$1" x="17.78" y="45.72" rot="R270"/>
 </instances>
 <busses>
 </busses>
@@ -1985,6 +1982,10 @@ W = angled&lt;p&gt;
 <pinref part="IC2" gate="G$1" pin="IN7"/>
 <pinref part="PORTD" gate="1" pin="4"/>
 <wire x1="33.02" y1="45.72" x2="35.56" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="45.72" x2="22.86" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="22.86" y1="45.72" x2="22.86" y2="50.8" width="0.1524" layer="91"/>
+<pinref part="R28" gate="G$1" pin="1"/>
+<wire x1="22.86" y1="50.8" x2="17.78" y2="50.8" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$52" class="0">
@@ -2258,6 +2259,13 @@ W = angled&lt;p&gt;
 <wire x1="182.88" y1="68.58" x2="182.88" y2="63.5" width="0.1524" layer="91"/>
 <pinref part="S3" gate="1" pin="P"/>
 <wire x1="182.88" y1="63.5" x2="185.42" y2="63.5" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$84" class="0">
+<segment>
+<pinref part="R28" gate="G$1" pin="2"/>
+<pinref part="PORTD" gate="1" pin="2"/>
+<wire x1="17.78" y1="40.64" x2="33.02" y2="40.64" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
