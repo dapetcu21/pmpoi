@@ -9,13 +9,22 @@ OBJFILES = \
 	src/pwm.o \
 	src/button.o \
 	src/time.o \
+	src/pattern_index.o \
 	lib/mpu6050.o \
 	lib/mpu6050dmp6.o \
 	lib/i2cmaster.o
 
+PATTERNS = \
+	src/patterns/arrow.png.h
+
 all: build
 
 build: main.hex
+
+%.png.h: %.png
+	scripts/convert_pattern.sh $^
+
+src/pattern_index.c: $(PATTERNS)
 
 %.o: %.c
 	avr-gcc $< -c -o $@ $(CFLAGS)
@@ -26,10 +35,10 @@ main.elf: $(OBJFILES)
 main.hex: main.elf
 	@ rm -f $@
 	@ avr-objcopy -j .text -j .data -O ihex $^ $@
-	@ ./print_size.sh $^ $(MAX_SIZE)
+	@ scripts/print_size.sh $^ $(MAX_SIZE)
 
 clean:
-	rm -f main.hex main.elf $(OBJFILES)
+	rm -f main.hex main.elf $(OBJFILES) $(PATTERNS)
 
 flash: main.hex
 	avrdude -p atmega324pa -c usbasp -U flash:w:main.hex
