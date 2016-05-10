@@ -37,7 +37,7 @@ cat > "${1}.h" << EOM
 
 struct {
     unsigned char samples;
-    float radiansPerPixel;
+    float samplesPerRadian;
     unsigned char data[$SAMPLES * 12];
 } pattern_arrow = {
   .samples = $SAMPLES,
