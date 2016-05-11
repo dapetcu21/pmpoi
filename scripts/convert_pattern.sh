@@ -31,17 +31,20 @@ sed 's/, $//' \
 
 META=$(exiftool -Description -b "$1")
 SAMPLES=$(gm identify -format %w "$1" 2> /dev/null)
+NAME=$(basename "$1" .png)
 
 cat > "${1}.h" << EOM
 #pragma once
+#include <stdint.h>
+#include "../pattern.h"
 
-struct {
-    unsigned char samples;
-    float samplesPerRadian;
-    unsigned char data[$SAMPLES * 12];
-} pattern_arrow = {
-  .samples = $SAMPLES,
+static const uint8_t data_${NAME}[${SAMPLES} * 12] __attribute__((progmem)) = {
+  ${DATA}
+};
+
+static const PatternImage pattern_${NAME} = {
+  .samples = ${SAMPLES},
 $(echo -n "${META}" | sed 's/^/  /')
-  .data = { ${DATA} }
+  .data = data_arrow
 };
 EOM

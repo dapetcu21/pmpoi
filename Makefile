@@ -9,13 +9,17 @@ OBJFILES = \
 	src/pwm.o \
 	src/button.o \
 	src/time.o \
+	src/pattern.o \
 	src/pattern_index.o \
 	lib/mpu6050.o \
 	lib/mpu6050dmp6.o \
 	lib/i2cmaster.o
 
 PATTERNS = \
-	src/patterns/arrow.png.h
+	src/patterns/arrow.png.h \
+	src/patterns/flower.png.h \
+	src/patterns/logo.png.h \
+	src/patterns/shroom.png.h
 
 all: build
 

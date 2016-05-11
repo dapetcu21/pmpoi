@@ -3,23 +3,22 @@
 #include <util/delay.h>
 #include <mpu6050.h>
 #include <i2cmaster.h>
+#include <stdlib.h>
 
 #include "pwm.h"
 #include "button.h"
 #include "time.h"
-
-volatile uint8_t off;
+#include "pattern.h"
 
 void buttonOnPress(uint8_t button) {
   switch (button) {
     case BUTTON_LEFT:
-      off = (off - 1) & 3;
+      patternMenuDown();
       break;
     case BUTTON_RIGHT:
-      off = (off + 1) & 3;
+      patternMenuUp();
       break;
     case BUTTON_A:
-      off = 0;
       break;
   }
 }
@@ -59,25 +58,25 @@ void setup() {
 int main() {
   setup();
 
-  // double ax, ay, az, gxd, gyd, gzd;
-  // while (1) {
-  //   mpu6050_getConvData(&ax, &ay, &az, &gxd, &gyd, &gzd);
-  //   pwmRenderColor(ax * 100.0 + 100.0, ay * 100.0 + 100.0, az * 100.0 + 100.0);
-  // }
-
-  uint8_t colors[] = {
-    0xf0, 0x0f, 0x00, // 2 instances of red
-    0x0f, 0x00, 0xf0, // 2 instances of green
-    0xff, 0x0f, 0xf0, // 2 instances of yellow
-    0x00, 0xf0, 0x0f, // 2 instances of blue
-    0xf0, 0x0f, 0x00, // 2 instances of red
-    0x0f, 0x00, 0xf0, // 2 instances of green
-    0xff, 0x0f, 0xf0, // 2 instances of yellow
-    0x00, 0xf0, 0x0f, // 2 instances of blue
-  };
+  PatternState state;
+  state.angularVelocity = 0.0;
+  state.deltaAngle = 0.0;
+  state.deltaTime = 0;
+  state.firstRender = 1;
+  state.slowSpinning = 0;
 
   while (1) {
-    pwmRenderHalfBytes(colors + off * 3);
+    int16_t d = 0;
+    int16_t gx = 0;
+    int16_t gz = 0;
+    mpu6050_getRawData(&d, &d, &d, &gx, &d, &gz);
+    double gdx = gx * (1.0 / MPU6050_GGAIN);
+    double gdz = gz * (1.0 / MPU6050_GGAIN);
+    state.angularVelocity = sqrt(gdx * gdx + gdz * gdz);
+
+    patternRenderMenu(&state, NULL);
+
+    state.firstRender = 0;
   }
 
   return 0;
