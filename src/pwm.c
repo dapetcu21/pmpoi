@@ -28,78 +28,78 @@ uint8_t * volatile nextRenderBuffer = renderBuffer2;
 volatile uint8_t shouldSwap = 0;
 
 ISR(TIMER0_COMPA_vect) {
-  uint8_t * buffer = currentRenderBuffer;
-  PWM_PORT1 = buffer[pwmCounter];
-  PWM_PORT2 = buffer[pwmCounter + PWM_LEVELS];
-  PWM_PORT3 = buffer[pwmCounter + PWM_LEVELS * 2];
+    uint8_t * buffer = currentRenderBuffer;
+    PWM_PORT1 = buffer[pwmCounter];
+    PWM_PORT2 = buffer[pwmCounter + PWM_LEVELS];
+    PWM_PORT3 = buffer[pwmCounter + PWM_LEVELS * 2];
 
-  pwmCounter = (pwmCounter + 1) & (PWM_LEVELS - 1);
+    pwmCounter = (pwmCounter + 1) & (PWM_LEVELS - 1);
 
-  if (!pwmCounter && shouldSwap) {
-    currentRenderBuffer = nextRenderBuffer;
-    nextRenderBuffer = buffer;
-    shouldSwap = 0;
-  }
+    if (!pwmCounter && shouldSwap) {
+        currentRenderBuffer = nextRenderBuffer;
+        nextRenderBuffer = buffer;
+        shouldSwap = 0;
+    }
 }
 
 void pwmInit() {
-  PWM_DDR1 = 0xff;
-  PWM_DDR2 = 0xff;
-  PWM_DDR3 = 0xff;
+    PWM_DDR1 = 0xff;
+    PWM_DDR2 = 0xff;
+    PWM_DDR3 = 0xff;
 
-  memset(currentRenderBuffer, 0, PWM_LEVELS * 3);
+    memset(currentRenderBuffer, 0, PWM_LEVELS * 3);
 
-  TCCR0A |= (1 << WGM01);
-  OCR0A = 32;
-  TIMSK0 |= (1 << OCIE0A);
+    TCCR0A |= (1 << WGM01);
+    OCR0A = 32;
+    TIMSK0 |= (1 << OCIE0A);
 }
 
 void pwmEnable() {
-  pwmCounter = 0;
-  TCCR0B |= (1 << CS02);
+    pwmCounter = 0;
+    TCCR0B |= (1 << CS02);
 }
 
 void pwmDisable() {
-  TCCR0B &= ~((1 << CS00) | (1 << CS01) | (1 << CS02));
-  PWM_PORT1 = 0;
-  PWM_PORT2 = 0;
-  PWM_PORT3 = 0;
+    TCCR0B &= ~((1 << CS00) | (1 << CS01) | (1 << CS02));
+    PWM_PORT1 = 0;
+    PWM_PORT2 = 0;
+    PWM_PORT3 = 0;
 }
 
 void pwmRenderBytes(uint8_t * bytes) {
-  while (shouldSwap) {}; // Wait for vSync
+    while (shouldSwap) {}; // Wait for vSync
 
-  uint8_t * buffer = nextRenderBuffer;
-  memset(buffer, 0, PWM_LEVELS * 3);
+    uint8_t * buffer = nextRenderBuffer;
+    memset(buffer, 0, PWM_LEVELS * 3);
 
-  for (uint8_t ch = 0; ch < PWM_CHANNELS; ch++) {
-    uint8_t port = (ch >> 3) * PWM_LEVELS;
-    uint8_t bit = ch & 7;
-    uint8_t value = bytes[ch] >> (8 - PWM_LEVEL_BITS);
-    for (uint8_t level = 0; level < value; level++) {
-      buffer[level + port] |= (1 << bit);
+    for (uint8_t ch = 0; ch < PWM_CHANNELS; ch++) {
+        uint8_t port = (ch >> 3) * PWM_LEVELS;
+        uint8_t bit = ch & 7;
+        uint8_t value = bytes[ch] >> (8 - PWM_LEVEL_BITS);
+        for (uint8_t level = 0; level < value; level++) {
+            buffer[level + port] |= (1 << bit);
+        }
     }
-  }
 
-  shouldSwap = 1;
+    shouldSwap = 1;
 }
 
 void pwmRenderHalfBytes(uint8_t * halfBytes) {
-  while (shouldSwap) {}; // Wait for vSync
+    while (shouldSwap) {}; // Wait for vSync
 
-  uint8_t * buffer = nextRenderBuffer;
-  memset(buffer, 0, PWM_LEVELS * 3);
+    uint8_t * buffer = nextRenderBuffer;
+    memset(buffer, 0, PWM_LEVELS * 3);
 
-  for (uint8_t ch = 0; ch < PWM_CHANNELS; ch++) {
-    uint8_t port = (ch >> 3) * PWM_LEVELS;
-    uint8_t bit = ch & 7;
-    uint8_t value = (halfBytes[ch >> 1] >> (8 - 4 * (ch & 1) - PWM_LEVEL_BITS)) & (PWM_LEVELS - 1);
-    for (uint8_t level = 0; level < value; level++) {
-      buffer[level + port] |= (1 << bit);
+    for (uint8_t ch = 0; ch < PWM_CHANNELS; ch++) {
+        uint8_t port = (ch >> 3) * PWM_LEVELS;
+        uint8_t bit = ch & 7;
+        uint8_t value = (halfBytes[ch >> 1] >> (8 - 4 * (ch & 1) - PWM_LEVEL_BITS)) & (PWM_LEVELS - 1);
+        for (uint8_t level = 0; level < value; level++) {
+            buffer[level + port] |= (1 << bit);
+        }
     }
-  }
 
-  shouldSwap = 1;
+    shouldSwap = 1;
 }
 
 #define PWM_SOLID_MASK_1 0x49
@@ -107,32 +107,32 @@ void pwmRenderHalfBytes(uint8_t * halfBytes) {
 #define PWM_SOLID_MASK_3 0x24
 
 void pwmRenderColor(uint8_t red, uint8_t green, uint8_t blue) {
-  while (shouldSwap) {}; // Wait for vSync
+    while (shouldSwap) {}; // Wait for vSync
 
-  uint8_t * buffer = nextRenderBuffer;
-  memset(buffer, 0, PWM_LEVELS * 3);
+    uint8_t * buffer = nextRenderBuffer;
+    memset(buffer, 0, PWM_LEVELS * 3);
 
-  uint8_t redLevel = red >> (8 - PWM_LEVEL_BITS);
-  uint8_t greenLevel = green >> (8 - PWM_LEVEL_BITS);
-  uint8_t blueLevel = blue >> (8 - PWM_LEVEL_BITS);
+    uint8_t redLevel = red >> (8 - PWM_LEVEL_BITS);
+    uint8_t greenLevel = green >> (8 - PWM_LEVEL_BITS);
+    uint8_t blueLevel = blue >> (8 - PWM_LEVEL_BITS);
 
-  for (uint8_t level = 0; level < redLevel; level++) {
-    buffer[level] |= PWM_SOLID_MASK_1;
-    buffer[level + PWM_LEVELS] |= PWM_SOLID_MASK_2;
-    buffer[level + PWM_LEVELS * 2] |= PWM_SOLID_MASK_3;
-  }
+    for (uint8_t level = 0; level < redLevel; level++) {
+        buffer[level] |= PWM_SOLID_MASK_1;
+        buffer[level + PWM_LEVELS] |= PWM_SOLID_MASK_2;
+        buffer[level + PWM_LEVELS * 2] |= PWM_SOLID_MASK_3;
+    }
 
-  for (uint8_t level = 0; level < greenLevel; level++) {
-    buffer[level] |= PWM_SOLID_MASK_2;
-    buffer[level + PWM_LEVELS] |= PWM_SOLID_MASK_3;
-    buffer[level + PWM_LEVELS * 2] |= PWM_SOLID_MASK_1;
-  }
+    for (uint8_t level = 0; level < greenLevel; level++) {
+        buffer[level] |= PWM_SOLID_MASK_2;
+        buffer[level + PWM_LEVELS] |= PWM_SOLID_MASK_3;
+        buffer[level + PWM_LEVELS * 2] |= PWM_SOLID_MASK_1;
+    }
 
-  for (uint8_t level = 0; level < blueLevel; level++) {
-    buffer[level] |= PWM_SOLID_MASK_3;
-    buffer[level + PWM_LEVELS] |= PWM_SOLID_MASK_1;
-    buffer[level + PWM_LEVELS * 2] |= PWM_SOLID_MASK_2;
-  }
+    for (uint8_t level = 0; level < blueLevel; level++) {
+        buffer[level] |= PWM_SOLID_MASK_3;
+        buffer[level + PWM_LEVELS] |= PWM_SOLID_MASK_1;
+        buffer[level + PWM_LEVELS * 2] |= PWM_SOLID_MASK_2;
+    }
 
-  shouldSwap = 1;
+    shouldSwap = 1;
 }
