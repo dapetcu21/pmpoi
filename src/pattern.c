@@ -1,11 +1,17 @@
 #include "pattern.h"
 #include "pattern_index.h"
 #include "pwm.h"
+#include "time.h"
+
+#include <string.h>
 #include <avr/pgmspace.h>
 
 static uint8_t currentPattern = 0;
 static uint8_t resetPattern = 1;
-uint8_t patternRenderBuffer[12];
+uint8_t patternRenderBuffer[24];
+uint16_t menuShowTimeout;
+
+#define MENU_TIMEOUT 1000
 
 void patternMenuUp() {
     currentPattern++;
@@ -28,7 +34,23 @@ void patternRenderMenu(PatternState * state, void * data) {
     if (resetPattern) {
         state->firstRender = 1;
         resetPattern = 0;
+        menuShowTimeout = MENU_TIMEOUT;
     }
+
+    if (menuShowTimeout) {
+        if (state->deltaTime > menuShowTimeout) {
+            menuShowTimeout = 0;
+        } else {
+            menuShowTimeout -= state->deltaTime;
+        }
+        if (state->slowSpinning) {
+            memset(patternRenderBuffer, 0, 24);
+            patternRenderBuffer[(currentPattern & 7) * 3] = 0xff;
+            pwmRenderBytes(patternRenderBuffer);
+            return;
+        }
+    }
+
     patternRenderPattern(state, &patternIndex[currentPattern]);
 }
 
@@ -39,7 +61,9 @@ void patternRenderImage(PatternState * state, PatternImage * image) {
         position = 0.0;
     }
 
-    position += image->samplesPerDegree * state->deltaAngle;
+    position += image->samplesPerDegree * (state->slowSpinning
+        ? state->deltaTime * 0.045
+        : state->deltaAngle);
     while (position >= image->samples) {
         position -= image->samples;
     }

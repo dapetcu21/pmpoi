@@ -17,9 +17,9 @@ OBJFILES = \
 
 PATTERNS = \
 	src/patterns/arrow.png.h \
-	src/patterns/flower.png.h \
-	src/patterns/logo.png.h \
-	src/patterns/shroom.png.h
+	src/patterns/blades.png.h \
+	src/patterns/orbs.png.h \
+	src/patterns/logo.png.h
 
 all: build
 

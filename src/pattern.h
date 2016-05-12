@@ -40,4 +40,4 @@ void patternMenuDown();
 
 void patternRenderImage(PatternState * state, PatternImage * image);
 
-extern uint8_t patternRenderBuffer[12];
+extern uint8_t patternRenderBuffer[];
