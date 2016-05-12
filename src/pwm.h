@@ -13,6 +13,6 @@ void pwmInit();
 void pwmEnable();
 void pwmDisable();
 
-void pwmRenderBytes(uint8_t * buffer);
-void pwmRenderHalfBytes(uint8_t * buffer);
+void pwmRenderBytes(const uint8_t * buffer);
+void pwmRenderHalfBytes(const uint8_t * buffer);
 void pwmRenderColor(uint8_t red, uint8_t green, uint8_t blue);

@@ -14,7 +14,7 @@ function trunc_hex {
 }
 
 DATA=$(\
-gm convert $1 -rotate 90 rgb:- 2> /dev/null |\
+gm convert $1 -flip -rotate 90 rgb:- 2> /dev/null |\
 hexdump -v -e '6/1 "%02x " "\n"' |\
 while read -r -a line
 do
@@ -44,7 +44,8 @@ static const uint8_t data_${NAME}[${SAMPLES} * 12] __attribute__((progmem)) = {
 
 static const PatternImage pattern_${NAME} = {
   .samples = ${SAMPLES},
+  .dataStorage = PatternStorageProgmem,
 $(echo -n "${META}" | sed 's/^/  /')
-  .data = data_arrow
+  .data = data_${NAME}
 };
 EOM

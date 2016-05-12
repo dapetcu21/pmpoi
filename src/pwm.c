@@ -50,7 +50,7 @@ void pwmInit() {
     memset(currentRenderBuffer, 0, PWM_LEVELS * 3);
 
     TCCR0A |= (1 << WGM01);
-    OCR0A = 32;
+    OCR0A = 1;
     TIMSK0 |= (1 << OCIE0A);
 }
 
@@ -66,7 +66,7 @@ void pwmDisable() {
     PWM_PORT3 = 0;
 }
 
-void pwmRenderBytes(uint8_t * bytes) {
+void pwmRenderBytes(const uint8_t * bytes) {
     while (shouldSwap) {}; // Wait for vSync
 
     uint8_t * buffer = nextRenderBuffer;
@@ -84,7 +84,7 @@ void pwmRenderBytes(uint8_t * bytes) {
     shouldSwap = 1;
 }
 
-void pwmRenderHalfBytes(uint8_t * halfBytes) {
+void pwmRenderHalfBytes(const uint8_t * halfBytes) {
     while (shouldSwap) {}; // Wait for vSync
 
     uint8_t * buffer = nextRenderBuffer;

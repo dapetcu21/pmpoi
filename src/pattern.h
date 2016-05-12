@@ -2,6 +2,9 @@
 
 #include <stdint.h>
 
+#define PATTERN_SLOW_TRESHOLD 90
+#define PATTERN_SLOW_DURATION 500
+
 typedef struct {
     uint8_t firstRender;
     uint8_t slowSpinning;
@@ -36,3 +39,5 @@ void patternMenuUp();
 void patternMenuDown();
 
 void patternRenderImage(PatternState * state, PatternImage * image);
+
+extern uint8_t patternRenderBuffer[12];
