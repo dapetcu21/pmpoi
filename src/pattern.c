@@ -3,6 +3,7 @@
 #include "pwm.h"
 #include "time.h"
 
+#include <math.h>
 #include <string.h>
 #include <avr/pgmspace.h>
 
@@ -10,8 +11,9 @@ static uint8_t currentPattern = 0;
 static uint8_t resetPattern = 1;
 uint8_t patternRenderBuffer[24];
 uint16_t menuShowTimeout;
+double displaySelectedIndex = 0;
 
-#define MENU_TIMEOUT 1000
+#define MENU_TIMEOUT 2000
 
 void patternMenuUp() {
     currentPattern++;
@@ -30,6 +32,12 @@ void patternMenuDown() {
     resetPattern = 1;
 }
 
+static double lowPassFilter(double lastValue, double newValue, uint16_t deltaT) {
+    static const double RC = 1000.0 * (1.0 / (2.0 * M_PI));
+    double alpha = deltaT / (RC + deltaT);
+    return lastValue + alpha * (newValue - lastValue);
+}
+
 void patternRenderMenu(PatternState * state, void * data) {
     if (resetPattern) {
         state->firstRender = 1;
@@ -44,8 +52,14 @@ void patternRenderMenu(PatternState * state, void * data) {
             menuShowTimeout -= state->deltaTime;
         }
         if (state->slowSpinning) {
+            uint8_t selectedIndex = currentPattern & 7;
+
             memset(patternRenderBuffer, 0, 24);
-            patternRenderBuffer[(currentPattern & 7) * 3] = 0xff;
+            displaySelectedIndex = lowPassFilter(displaySelectedIndex, selectedIndex, state->deltaTime);
+            uint8_t low = (int)displaySelectedIndex;
+            double fraction = displaySelectedIndex - low;
+            patternRenderBuffer[low * 3] = (uint8_t) 0xff * (1.0 - fraction);
+            patternRenderBuffer[((low + 1) & 7) * 3] = (uint8_t) 0xff * fraction;
             pwmRenderBytes(patternRenderBuffer);
             return;
         }
