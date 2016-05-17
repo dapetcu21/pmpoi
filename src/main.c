@@ -9,6 +9,7 @@
 #include "button.h"
 #include "time.h"
 #include "pattern.h"
+#include "eeprom.h"
 
 void buttonOnPress(uint8_t button) {
     switch (button) {
@@ -44,6 +45,9 @@ void setup() {
 
     // Init time counter
     timeInit();
+
+    // Init the EEPROM
+    eepromInit();
 
     // Init gyro
     i2c_init();

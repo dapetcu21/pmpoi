@@ -2,6 +2,7 @@
 #include "pattern_index.h"
 #include "pwm.h"
 #include "time.h"
+#include "eeprom.h"
 
 #include <math.h>
 #include <string.h>
@@ -21,6 +22,7 @@ void patternMenuUp() {
         currentPattern = 0;
     }
     resetPattern = 1;
+    eeprom_write_byte(EEPROM_SELECTED_PATTERN, currentPattern);
 }
 
 void patternMenuDown() {
@@ -30,6 +32,7 @@ void patternMenuDown() {
         currentPattern = patternIndexCount - 1;
     }
     resetPattern = 1;
+    eeprom_write_byte(EEPROM_SELECTED_PATTERN, currentPattern);
 }
 
 static double lowPassFilter(double lastValue, double newValue, uint16_t deltaT) {
@@ -39,6 +42,10 @@ static double lowPassFilter(double lastValue, double newValue, uint16_t deltaT) 
 }
 
 void patternRenderMenu(PatternState * state, void * data) {
+    if (state->firstRender) {
+        currentPattern = displaySelectedIndex = eeprom_read_byte(EEPROM_SELECTED_PATTERN);
+    }
+
     if (resetPattern) {
         state->firstRender = 1;
         resetPattern = 0;

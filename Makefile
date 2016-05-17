@@ -9,6 +9,7 @@ OBJFILES = \
 	src/pwm.o \
 	src/button.o \
 	src/time.o \
+	src/eeprom.o \
 	src/pattern.o \
 	src/pattern_index.o \
 	lib/mpu6050.o \
