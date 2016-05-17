@@ -20,6 +20,7 @@ PATTERNS = \
 	src/patterns/arrow.png.h \
 	src/patterns/blades.png.h \
 	src/patterns/orbs.png.h \
+	src/patterns/saw.png.h \
 	src/patterns/logo.png.h
 
 all: build
